@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  # RabbitMQ Queue
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    
+volumes:
+  rabbitmq_data:

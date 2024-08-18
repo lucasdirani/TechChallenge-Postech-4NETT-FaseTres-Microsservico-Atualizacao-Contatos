@@ -1,0 +1,38 @@
+{
+    "users": [
+        {
+            "name": "guest",
+            "password_hash": "BMfxN8drrYcIqXZMr+pWTpDT0nMcOagMduLX0bjr4jwud/pN",
+            "hashing_algorithm": "rabbit_password_hashing_sha256",
+            "tags": [ "administrator" ],
+            "limits": {}
+        }
+    ],
+    "vhosts": [
+        {
+            "name": "/"
+        }
+    ],
+    "permissions": [
+        {
+            "user": "guest",
+            "vhost": "/",
+            "configure": ".*",
+            "write": ".*",
+            "read": ".*"
+        }
+    ],
+    "queues": [
+        {
+            "name": "contact.update",
+            "vhost": "/",
+            "durable": true,
+            "arguments": {
+                "x-message-ttl": 600000,
+                "x-overflow": "reject-publish",
+                "x-single-active-consumer": true,
+                "x-max-length": 1000
+            }
+        }
+    ]
+}
