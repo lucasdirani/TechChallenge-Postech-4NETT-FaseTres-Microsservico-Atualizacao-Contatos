@@ -26,6 +26,19 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
             return new(phoneNumber, AreaCodeValueObject.Create(areaCode));
         }
 
+        public static string Format(string phoneNumberAreaCode, string phoneNumber)
+        {
+            if (phoneNumber.Length == 8)
+            {
+                return $"({phoneNumberAreaCode}) {phoneNumber[..4]}-{phoneNumber[4..]}";
+            }
+            else if (phoneNumber.Length == 9)
+            {
+                return $"({phoneNumberAreaCode}) {phoneNumber[..5]}-{phoneNumber[5..]}";
+            }
+            return string.Empty;
+        }
+
         public string Number { get; init; }
         public AreaCodeValueObject AreaCode { get; init; }
 
