@@ -9,7 +9,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Ou
     public record UpdateContactOutput
     {
         public Guid ContactId { get; init; }
-        public DateTime ContactNotifiedForUpdateAt { get; init; }
+        public bool IsContactNotifiedForUpdate { get; init; }
+        public DateTime? ContactNotifiedForUpdateAt { get; init; }
         public required string ContactFirstName { get; init; }
         public required string ContactLastName { get; init; }
         public required string ContactEmail { get; init; }
@@ -20,6 +21,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Ou
             return new()
             {
                 ContactId = contactEntity.Id,
+                IsContactNotifiedForUpdate = eventResult.IsEventPublished(),
                 ContactEmail = contactEntity.ContactEmail.Value,
                 ContactFirstName = contactEntity.ContactName.FirstName,
                 ContactLastName = contactEntity.ContactName.LastName,

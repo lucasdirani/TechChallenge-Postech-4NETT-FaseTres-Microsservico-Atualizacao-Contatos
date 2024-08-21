@@ -4,6 +4,7 @@ using Moq;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results.Enumerators;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
@@ -68,6 +69,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
 
             // Assert
             updateContactOutput.ContactId.Should().Be(contactId);
+            updateContactOutput.IsContactNotifiedForUpdate.Should().BeTrue();
             updateContactOutput.ContactNotifiedForUpdateAt.Should().Be(contactEventPublishedAt);
             updateContactOutput.ContactFirstName.Should().Be(updatedContactDataInput.ContactFirstName);
             updateContactOutput.ContactLastName.Should().Be(updatedContactDataInput.ContactLastName);
@@ -339,6 +341,65 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             exception.CurrentContactData.Should().Be(currentContactDataInput);
             exception.UpdatedContactData.Should().Be(updatedContactDataInput);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
+        }
+
+        [Fact(DisplayName = "Failure to notify contact update")]
+        [Trait("Action", "ExecuteAsync")]
+        public async Task ExecuteAsync_FailureToNotifyContactUpdate_ShouldReturnOutputResultIndicatingContactUpdateNotificationFailure()
+        {
+            // Arrange              
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataInput currentContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "11"
+            };
+            UpdatedContactDataInput updatedContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdateContactInput updateContactInput = new() 
+            { 
+                ContactId = contactId,
+                CurrentContactData = currentContactDataInput,
+                UpdatedContactData = updatedContactDataInput
+            };
+            Mock<IEventPublisher<ContactUpdatedEvent>> eventPublisher = new();    
+            eventPublisher
+                .Setup(e => e.PublishEventAsync(new ContactUpdatedEvent()
+                {
+                    ContactId = contactId,
+                    ContactFirstName = updatedContactDataInput.ContactFirstName,
+                    ContactLastName = updatedContactDataInput.ContactLastName,
+                    ContactEmail = updatedContactDataInput.ContactEmail,
+                    ContactPhoneNumber = ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber),
+                }))
+                .ReturnsAsync(() => new PublishedEventResult()
+                {
+                    EventId = contactId,
+                    Status = PublishEventStatus.Error
+                });
+            UpdateContactUseCase useCase = new(eventPublisher.Object);
+
+            // Act
+            UpdateContactOutput updateContactOutput = await useCase.ExecuteAsync(updateContactInput);
+
+            // Assert
+            updateContactOutput.ContactId.Should().Be(contactId);
+            updateContactOutput.IsContactNotifiedForUpdate.Should().BeFalse();
+            updateContactOutput.ContactNotifiedForUpdateAt.Should().BeNull();
+            updateContactOutput.ContactFirstName.Should().Be(updatedContactDataInput.ContactFirstName);
+            updateContactOutput.ContactLastName.Should().Be(updatedContactDataInput.ContactLastName);
+            updateContactOutput.ContactEmail.Should().Be(updatedContactDataInput.ContactEmail);
+            updateContactOutput.ContactPhoneNumber.Should().Be(ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber));
+            eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Once());
         }
     }
 }
