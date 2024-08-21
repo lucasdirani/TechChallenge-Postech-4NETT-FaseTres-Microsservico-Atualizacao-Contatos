@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Postech.GroupEight.TechChallenge.ContactUpdate.Core\Postech.GroupEight.TechChallenge.ContactUpdate.Core.csproj" />
     <ProjectReference Include="..\..\src\Postech.GroupEight.TechChallenge.ContactUpdate.Application\Postech.GroupEight.TechChallenge.ContactUpdate.Application.csproj" />
+    <ProjectReference Include="..\..\src\Postech.GroupEight.TechChallenge.ContactUpdate.Infra\Postech.GroupEight.TechChallenge.ContactUpdate.Infra.csproj" />
   </ItemGroup>
 
 </Project>

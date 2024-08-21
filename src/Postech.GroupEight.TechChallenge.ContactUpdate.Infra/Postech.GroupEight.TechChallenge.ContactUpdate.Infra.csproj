@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Application\Postech.GroupEight.TechChallenge.ContactUpdate.Application.csproj" />
+  </ItemGroup>
+
 </Project>
