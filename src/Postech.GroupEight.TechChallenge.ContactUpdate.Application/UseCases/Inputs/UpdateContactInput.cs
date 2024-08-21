@@ -18,6 +18,15 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.In
             ContactPhoneValueObject contactPhone = new(CurrentContactData.ContactPhoneNumber, AreaCodeValueObject.Create(CurrentContactData.ContactPhoneNumberAreaCode));
             return new(ContactId, contactName, contactEmail, contactPhone);
         }
+
+        internal bool CheckIfCurrentAndUpdatedContactDataAreTheSame()
+        {
+            return string.Equals(CurrentContactData.ContactEmail, UpdatedContactData.ContactEmail, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(CurrentContactData.ContactFirstName, UpdatedContactData.ContactFirstName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(CurrentContactData.ContactLastName, UpdatedContactData.ContactLastName, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(CurrentContactData.ContactPhoneNumber, UpdatedContactData.ContactPhoneNumber)
+                && string.Equals(CurrentContactData.ContactPhoneNumberAreaCode, UpdatedContactData.ContactPhoneNumberAreaCode);
+        }
     }
 
     [ExcludeFromCodeCoverage]

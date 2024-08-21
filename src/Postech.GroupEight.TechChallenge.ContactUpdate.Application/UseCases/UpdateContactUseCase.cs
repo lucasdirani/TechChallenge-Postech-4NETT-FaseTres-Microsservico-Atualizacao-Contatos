@@ -2,6 +2,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Extensions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Outputs;
@@ -15,6 +16,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases
 
         public async Task<UpdateContactOutput> ExecuteAsync(UpdateContactInput input)
         {
+            UpdateContactInputException.ThrowWhenCurrentAndUpdatedContactDataAreEqual(input);
             ContactEntity contactEntity = input.AsContactEntity();
             contactEntity.UpdateContactEmail(input.UpdatedContactData.ContactEmail);
             contactEntity.UpdateContactName(input.UpdatedContactData.ContactFirstName, input.UpdatedContactData.ContactLastName);

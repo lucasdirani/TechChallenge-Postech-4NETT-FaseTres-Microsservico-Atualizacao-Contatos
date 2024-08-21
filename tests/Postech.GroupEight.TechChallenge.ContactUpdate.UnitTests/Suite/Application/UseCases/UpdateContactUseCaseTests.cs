@@ -5,6 +5,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Outputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Exceptions.ValueObjects;
@@ -298,6 +299,45 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             AreaCodeValueNotSupportedException exception = await Assert.ThrowsAsync<AreaCodeValueNotSupportedException>(() => useCase.ExecuteAsync(updateContactInput));
             exception.Message.Should().NotBeNullOrEmpty();
             exception.AreaCodeValue.Should().Be(newInvalidAreaCodePhoneNumber);
+            eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
+        }
+
+        [Fact(DisplayName = "Updating a contact with the same data currently registered")]
+        [Trait("Action", "ExecuteAsync")]
+        public async Task ExecuteAsync_UpdatingContactWithTheSameDataCurrentlyRegistered_ShouldThrowUpdateContactInputException()
+        {
+            // Arrange              
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataInput currentContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdatedContactDataInput updatedContactDataInput = new() 
+            { 
+                ContactFirstName = currentContactDataInput.ContactFirstName,
+                ContactLastName = currentContactDataInput.ContactLastName,
+                ContactEmail = currentContactDataInput.ContactEmail,
+                ContactPhoneNumber = currentContactDataInput.ContactPhoneNumber,
+                ContactPhoneNumberAreaCode = currentContactDataInput.ContactPhoneNumberAreaCode
+            };
+            UpdateContactInput updateContactInput = new() 
+            { 
+                ContactId = contactId,
+                CurrentContactData = currentContactDataInput,
+                UpdatedContactData = updatedContactDataInput
+            };
+            Mock<IEventPublisher<ContactUpdatedEvent>> eventPublisher = new();
+            UpdateContactUseCase useCase = new(eventPublisher.Object);
+
+            // Assert
+            UpdateContactInputException exception = await Assert.ThrowsAsync<UpdateContactInputException>(() => useCase.ExecuteAsync(updateContactInput));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.CurrentContactData.Should().Be(currentContactDataInput);
+            exception.UpdatedContactData.Should().Be(updatedContactDataInput);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
         }
     }
