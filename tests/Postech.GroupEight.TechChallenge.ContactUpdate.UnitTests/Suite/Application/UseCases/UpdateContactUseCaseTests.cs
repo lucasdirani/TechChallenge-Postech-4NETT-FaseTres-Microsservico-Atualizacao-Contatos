@@ -7,6 +7,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Outputs;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Exceptions.ValueObjects;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Application.UseCases 
@@ -72,6 +73,49 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             updateContactOutput.ContactEmail.Should().Be(updatedContactDataInput.ContactEmail);
             updateContactOutput.ContactPhoneNumber.Should().Be(ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber));
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Once());
+        }
+
+        [Theory(DisplayName = "Updating a contact with a new first name in an invalid format")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("B54no")]
+        [InlineData("L!c?s")]
+        [InlineData("Ta*tiana")]
+        [Trait("Action", "ExecuteAsync")]
+        public async Task ExecuteAsync_UpdatingContactWithNewFirstNameInAnInvalidFormat_ShouldThrowContactFirstNameException(string newInvalidFirstName)
+        {
+            // Arrange              
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataInput currentContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "84"
+            };
+            UpdatedContactDataInput updatedContactDataInput = new() 
+            { 
+                ContactFirstName = newInvalidFirstName,
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdateContactInput updateContactInput = new() 
+            { 
+                ContactId = contactId,
+                CurrentContactData = currentContactDataInput,
+                UpdatedContactData = updatedContactDataInput
+            };
+            Mock<IEventPublisher<ContactUpdatedEvent>> eventPublisher = new();
+            UpdateContactUseCase useCase = new(eventPublisher.Object);
+
+            // Assert
+            ContactFirstNameException exception = await Assert.ThrowsAsync<ContactFirstNameException>(() => useCase.ExecuteAsync(updateContactInput));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.FirstNameValue.Should().Be(newInvalidFirstName);
+            eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
         }
     }
 }
