@@ -1,10 +1,14 @@
 using System.Text.RegularExpressions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Exceptions.ValueObjects;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Extensions.Common;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
 {
     public partial record ContactPhoneValueObject
     {
+        private const int MinimumLengthPhoneNumber = 8;
+        private const int MaximumLengthPhoneNumber = 9;
+
         public ContactPhoneValueObject(string phoneNumber, AreaCodeValueObject areaCode)
             : this(phoneNumber)
         {
@@ -28,13 +32,15 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
 
         public static string Format(string phoneNumberAreaCode, string phoneNumber)
         {
-            if (phoneNumber.Length == 8)
+            ContactPhoneNumberException.ThrowIfFormatIsInvalid(phoneNumber, PhoneNumberRegex());
+            AreaCodeValueObject areaCode = AreaCodeValueObject.Create(phoneNumberAreaCode);
+            if (phoneNumber.ItHasALengthOf(MinimumLengthPhoneNumber))
             {
-                return $"({phoneNumberAreaCode}) {phoneNumber[..4]}-{phoneNumber[4..]}";
+                return $"({areaCode.Value}) {phoneNumber[..4]}-{phoneNumber[4..]}";
             }
-            else if (phoneNumber.Length == 9)
+            else if (phoneNumber.ItHasALengthOf(MaximumLengthPhoneNumber))
             {
-                return $"({phoneNumberAreaCode}) {phoneNumber[..5]}-{phoneNumber[5..]}";
+                return $"({areaCode.Value}) {phoneNumber[..5]}-{phoneNumber[5..]}";
             }
             return string.Empty;
         }

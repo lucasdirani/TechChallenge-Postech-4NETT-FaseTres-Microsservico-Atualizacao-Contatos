@@ -125,5 +125,52 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Core.Va
             contactPhone.Number.Should().Be(phoneNumberWithAreaCodePatternMatch.Groups[2].Value);
             contactPhone.AreaCode.Value.Should().Be(phoneNumberWithAreaCodePatternMatch.Groups[1].Value);
         }
+
+        [Fact(DisplayName = "Format a phone number with eight digits")]
+        [Trait("Action", "Format")]
+        public void Format_EightDigitPhoneNumber_ShouldFormatPhoneNumber()
+        {
+            string areaCode = "11";
+            string phoneNumber = "98765432";
+            string formattedPhoneNumber = ContactPhoneValueObject.Format(areaCode, phoneNumber);
+            formattedPhoneNumber.Should().Be("(11) 9876-5432");
+        }
+
+        [Fact(DisplayName = "Format a phone number with nine digits")]
+        [Trait("Action", "Format")]
+        public void Format_NineDigitPhoneNumber_ShouldFormatPhoneNumber()
+        {
+            string areaCode = "21";
+            string phoneNumber = "287654325";
+            string formattedPhoneNumber = ContactPhoneValueObject.Format(areaCode, phoneNumber);
+            formattedPhoneNumber.Should().Be("(21) 28765-4325");
+        }
+
+        [Theory(DisplayName = "Format a phone number with nine digits")]
+        [InlineData("11", "0123456789")]
+        [InlineData("11", "1122334455")]
+        [InlineData("11", "9876543200")]
+        [InlineData("11", "1111111111")]
+        [InlineData("11", "123456789012")]
+        [InlineData("11", "87654321A")]
+        [Trait("Action", "Format")]
+        public void Format_InvalidPhoneNumber_ShouldThrowContactPhoneNumberException(string areaCode, string phoneNumber)
+        {
+            ContactPhoneNumberException exception = Assert.Throws<ContactPhoneNumberException>(() => ContactPhoneValueObject.Format(areaCode, phoneNumber));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.PhoneNumber.Should().Be(phoneNumber);
+        }
+
+        [Theory(DisplayName = "Format a phone number with nine digits")]
+        [InlineData("100", "287654325")]
+        [InlineData("08", "98765432")]
+        [InlineData("60", "87654337")]
+        [Trait("Action", "Format")]
+        public void Format_InvalidAreaCode_ShouldThrowAreaCodeValueNotSupportedException(string areaCode, string phoneNumber)
+        {
+            AreaCodeValueNotSupportedException exception = Assert.Throws<AreaCodeValueNotSupportedException>(() => ContactPhoneValueObject.Format(areaCode, phoneNumber));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.AreaCodeValue.Should().Be(areaCode);
+        }
     }
 }
