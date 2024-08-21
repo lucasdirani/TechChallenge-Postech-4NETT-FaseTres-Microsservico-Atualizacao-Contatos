@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.RabbitMQ.Configurations
+namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Integrations.RabbitMQ.Configurations
 {
     [ExcludeFromCodeCoverage]
     public record RabbitMQConnectionConfiguration
