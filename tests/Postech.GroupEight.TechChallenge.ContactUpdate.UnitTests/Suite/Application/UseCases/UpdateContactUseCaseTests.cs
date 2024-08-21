@@ -257,5 +257,48 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             exception.PhoneNumber.Should().Be(newInvalidPhoneNumber);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
         }
+
+        [Theory(DisplayName = "Updating a contact with a new area code phone number in an invalid format")]
+        [InlineData("100")]
+        [InlineData("09")]
+        [InlineData("56")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [Trait("Action", "ExecuteAsync")]
+        public async Task ExecuteAsync_UpdatingContactWithNewAreaCodePhoneNumberInAnInvalidFormat_ShouldThrowAreaCodeValueNotSupportedException(string newInvalidAreaCodePhoneNumber)
+        {
+            // Arrange              
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataInput currentContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdatedContactDataInput updatedContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = newInvalidAreaCodePhoneNumber
+            };
+            UpdateContactInput updateContactInput = new() 
+            { 
+                ContactId = contactId,
+                CurrentContactData = currentContactDataInput,
+                UpdatedContactData = updatedContactDataInput
+            };
+            Mock<IEventPublisher<ContactUpdatedEvent>> eventPublisher = new();
+            UpdateContactUseCase useCase = new(eventPublisher.Object);
+
+            // Assert
+            AreaCodeValueNotSupportedException exception = await Assert.ThrowsAsync<AreaCodeValueNotSupportedException>(() => useCase.ExecuteAsync(updateContactInput));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.AreaCodeValue.Should().Be(newInvalidAreaCodePhoneNumber);
+            eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
+        }
     }
 }
