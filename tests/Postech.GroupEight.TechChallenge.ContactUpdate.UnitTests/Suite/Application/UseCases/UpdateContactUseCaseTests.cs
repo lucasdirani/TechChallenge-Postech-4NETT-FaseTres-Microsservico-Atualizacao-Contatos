@@ -162,5 +162,50 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             exception.LastNameValue.Should().Be(newInvalidLastName);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
         }
+
+        [Theory(DisplayName = "Updating a contact with a new email address in an invalid format")]
+        [InlineData("cleiton dias@gmail.com")]
+        [InlineData("jair.raposo@")]
+        [InlineData("milton.morgado4@hotmail")]
+        [InlineData("leticia-mariagmail.com")]
+        [InlineData("@yahoo.com")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [Trait("Action", "ExecuteAsync")]
+        public async Task ExecuteAsync_UpdatingContactWithNewEmailAddressInAnInvalidFormat_ShouldThrowContactEmailAddressException(string newInvalidEmailAddress)
+        {
+            // Arrange              
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataInput currentContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = _faker.Internet.Email(),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdatedContactDataInput updatedContactDataInput = new() 
+            { 
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactEmail = newInvalidEmailAddress,
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "21"
+            };
+            UpdateContactInput updateContactInput = new() 
+            { 
+                ContactId = contactId,
+                CurrentContactData = currentContactDataInput,
+                UpdatedContactData = updatedContactDataInput
+            };
+            Mock<IEventPublisher<ContactUpdatedEvent>> eventPublisher = new();
+            UpdateContactUseCase useCase = new(eventPublisher.Object);
+
+            // Assert
+            ContactEmailAddressException exception = await Assert.ThrowsAsync<ContactEmailAddressException>(() => useCase.ExecuteAsync(updateContactInput));
+            exception.Message.Should().NotBeNullOrEmpty();
+            exception.EmailAddressValue.Should().Be(newInvalidEmailAddress);
+            eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Never());
+        }
     }
 }
