@@ -9,6 +9,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Resu
         public Guid EventId { get; init; }
         public PublishEventStatus Status { get; init; }
         public DateTime? PublishedAt { get; init; }
+        public required string Description { get; init; }
 
         internal bool IsEventPublished()
         {

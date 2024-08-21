@@ -60,7 +60,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
                 .ReturnsAsync(() => new PublishedEventResult()
                 {
                     EventId = contactId,
-                    PublishedAt = contactEventPublishedAt
+                    PublishedAt = contactEventPublishedAt,
+                    Description = "Event successfully published to integration queue"
                 });
             UpdateContactUseCase useCase = new(eventPublisher.Object);
 
@@ -384,7 +385,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
                 .ReturnsAsync(() => new PublishedEventResult()
                 {
                     EventId = contactId,
-                    Status = PublishEventStatus.Error
+                    Status = PublishEventStatus.Error,
+                    Description = "Failed to publish event to integration queue"
                 });
             UpdateContactUseCase useCase = new(eventPublisher.Object);
 

@@ -11,12 +11,24 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Publish
 
         public async Task<PublishedEventResult> PublishEventAsync(ContactUpdatedEvent eventData)
         {
-            await _queue.PublishMessageAsync(eventData);
-            return new() {
-                EventId = eventData.ContactId,
-                PublishedAt = DateTime.UtcNow,
-                Status = PublishEventStatus.Success
-            };
+            try 
+            {
+                await _queue.PublishMessageAsync(eventData);
+                return new() {
+                    EventId = eventData.ContactId,
+                    PublishedAt = DateTime.UtcNow,
+                    Status = PublishEventStatus.Success,
+                    Description = "Event successfully published to integration queue"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new() {
+                    EventId = eventData.ContactId,
+                    Status = PublishEventStatus.Error,
+                    Description = ex.Message
+                };
+            }
         }
     }
 }

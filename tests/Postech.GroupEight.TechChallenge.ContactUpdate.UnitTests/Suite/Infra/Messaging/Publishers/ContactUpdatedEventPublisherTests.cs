@@ -38,6 +38,36 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.M
             result.EventId.Should().Be(contactUpdatedEvent.ContactId);
             result.PublishedAt.Should().NotBeNull().And.BeOnOrBefore(DateTime.UtcNow);
             result.Status.Should().Be(PublishEventStatus.Success);
+            result.Description.Should().Be("Event successfully published to integration queue");
+        }
+
+        [Fact(DisplayName = "Failed to publish event to integration queue")]
+        [Trait("Action", "PublishEventAsync")]
+        public async Task PublishEventAsync_FailedToPublishEventToIntegrationQueue_ShouldReturnResultIndicatingError()
+        {
+            // Arrange
+            ContactUpdatedEvent contactUpdatedEvent = new()
+            {
+                ContactId = Guid.NewGuid(),
+                ContactFirstName = _faker.Name.FirstName(),
+                ContactLastName = _faker.Name.LastName(),
+                ContactPhoneNumber = ContactPhoneValueObject.Format("11", _faker.Phone.PhoneNumber("9########")),
+                ContactEmail = _faker.Internet.Email()
+            };
+            Mock<IQueue> queue = new();
+            queue
+                .Setup(q => q.PublishMessageAsync(contactUpdatedEvent))
+                .ThrowsAsync(new Exception("Failed to publish event to integration queue"));
+            ContactUpdatedEventPublisher publisher = new(queue.Object);
+
+            // Assert
+            PublishedEventResult result = await publisher.PublishEventAsync(contactUpdatedEvent);
+
+            // Assert
+            result.EventId.Should().Be(contactUpdatedEvent.ContactId);
+            result.PublishedAt.Should().BeNull();
+            result.Status.Should().Be(PublishEventStatus.Error);
+            result.Description.Should().Be("Failed to publish event to integration queue");
         }
     }
 }
