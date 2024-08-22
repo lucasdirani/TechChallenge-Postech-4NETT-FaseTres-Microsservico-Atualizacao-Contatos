@@ -5,6 +5,6 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging
 {
     public interface IQueue
     {
-        Task PublishMessageAsync<T>(T message, IQueueMessageHeader header, QueueEndpoint queueEndpoint); 
+        Task PublishMessageAsync<T>(T message, IQueueMessageHeader header, QueueEndpoint queueEndpoint) where T : notnull; 
     }
 }
