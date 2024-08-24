@@ -5,6 +5,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
 {
     public partial record ContactEmailValueObject
     {
+        public const int ContactEmailMaxLength = 60;
+
         public ContactEmailValueObject(string value)
         {
             ContactEmailAddressException.ThrowIfFormatIsInvalid(value, EmailValueRegex());

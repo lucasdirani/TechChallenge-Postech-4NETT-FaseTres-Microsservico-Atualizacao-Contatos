@@ -6,8 +6,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
 {
     public partial record ContactPhoneValueObject
     {
-        private const int MinimumLengthPhoneNumber = 8;
-        private const int MaximumLengthPhoneNumber = 9;
+        public const int ContactPhoneNumberMinLength = 8;
+        public const int ContactPhoneNumberMaxLength = 9;
 
         public ContactPhoneValueObject(string phoneNumber, AreaCodeValueObject areaCode)
             : this(phoneNumber)
@@ -34,11 +34,11 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
         {
             ContactPhoneNumberException.ThrowIfFormatIsInvalid(phoneNumber, PhoneNumberRegex());
             AreaCodeValueObject areaCode = AreaCodeValueObject.Create(phoneNumberAreaCode);
-            if (phoneNumber.ItHasALengthOf(MinimumLengthPhoneNumber))
+            if (phoneNumber.ItHasALengthOf(ContactPhoneNumberMinLength))
             {
                 return $"({areaCode.Value}) {phoneNumber[..4]}-{phoneNumber[4..]}";
             }
-            else if (phoneNumber.ItHasALengthOf(MaximumLengthPhoneNumber))
+            else if (phoneNumber.ItHasALengthOf(ContactPhoneNumberMaxLength))
             {
                 return $"({areaCode.Value}) {phoneNumber[..5]}-{phoneNumber[5..]}";
             }

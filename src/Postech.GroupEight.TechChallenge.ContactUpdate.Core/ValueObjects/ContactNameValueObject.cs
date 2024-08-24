@@ -5,6 +5,9 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects
 {
     public partial record ContactNameValueObject
     {
+        public const int ContactFirstNameMaxLength = 40;
+        public const int ContactLastNameMaxLength = 60;
+        
         public ContactNameValueObject(string firstName, string lastName)
         {
             ContactFirstNameException.ThrowIfFormatIsInvalid(firstName, FirstNameRegex());
