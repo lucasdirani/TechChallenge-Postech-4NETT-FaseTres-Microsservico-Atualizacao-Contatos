@@ -11,4 +11,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Infra\Postech.GroupEight.TechChallenge.ContactUpdate.Infra.csproj" />
+  </ItemGroup>
+
 </Project>
