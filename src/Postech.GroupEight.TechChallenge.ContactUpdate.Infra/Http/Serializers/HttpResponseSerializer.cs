@@ -10,7 +10,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Serializers
     {
         public static HttpResponseSerializeResult Serialize<T>(T responseObject, StringValues acceptHeader)
         {
-            if (acceptHeader.ContainsAny("application/*", "*/*", "application/json"))
+            if (StringValues.IsNullOrEmpty(acceptHeader) || acceptHeader.ContainsAny("application/*", "*/*", "application/json"))
             {
                 return new() { ContentType = "application/json", Data = JsonSerializer.Serialize(responseObject) };
             }
