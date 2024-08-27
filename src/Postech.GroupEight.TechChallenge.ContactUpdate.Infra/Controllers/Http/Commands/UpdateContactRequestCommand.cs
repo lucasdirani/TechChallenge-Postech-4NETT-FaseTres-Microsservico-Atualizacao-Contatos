@@ -9,18 +9,41 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.
         [JsonPropertyName("contactId")]
         public Guid ContactId { get; init; }
 
-        [JsonPropertyName("contactName")]
-        public required UpdateContactNameRequestCommand ContactName { get; init; }
+        [JsonPropertyName("currentContactData")]
+        public required CurrentContactDataRequestCommand CurrentContactData { get; init; }
 
-        [JsonPropertyName("contactEmail")]
-        public required UpdateContactEmailRequestCommand ContactEmail { get; init; }
-
-        [JsonPropertyName("contactPhone")]
-        public required UpdateContactPhoneRequestCommand ContactPhone { get; init; }
+        [JsonPropertyName("updatedContactData")]
+        public required UpdatedContactDataRequestCommand UpdatedContactData { get; init; }
     }
 
     [ExcludeFromCodeCoverage]
-    public record UpdateContactNameRequestCommand
+    public record CurrentContactDataRequestCommand
+    {
+        [JsonPropertyName("contactName")]
+        public required ContactNameRequestCommand ContactName { get; init; }
+
+        [JsonPropertyName("contactEmail")]
+        public required ContactEmailRequestCommand ContactEmail { get; init; }
+
+        [JsonPropertyName("contactPhone")]
+        public required ContactPhoneRequestCommand ContactPhone { get; init; }
+    }
+
+    [ExcludeFromCodeCoverage]
+    public record UpdatedContactDataRequestCommand
+    {
+        [JsonPropertyName("contactName")]
+        public required ContactNameRequestCommand ContactName { get; init; }
+
+        [JsonPropertyName("contactEmail")]
+        public required ContactEmailRequestCommand ContactEmail { get; init; }
+
+        [JsonPropertyName("contactPhone")]
+        public required ContactPhoneRequestCommand ContactPhone { get; init; }
+    }
+
+    [ExcludeFromCodeCoverage]
+    public record ContactNameRequestCommand
     {
         [JsonPropertyName("firstName")]
         public required string FirstName { get; init; }
@@ -30,14 +53,14 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.
     }
 
     [ExcludeFromCodeCoverage]
-    public record UpdateContactEmailRequestCommand
+    public record ContactEmailRequestCommand
     {
         [JsonPropertyName("address")]
         public required string Address { get; init; }
     }
 
     [ExcludeFromCodeCoverage]
-    public record UpdateContactPhoneRequestCommand
+    public record ContactPhoneRequestCommand
     {
         [JsonPropertyName("number")]
         public required string Number { get; init; }

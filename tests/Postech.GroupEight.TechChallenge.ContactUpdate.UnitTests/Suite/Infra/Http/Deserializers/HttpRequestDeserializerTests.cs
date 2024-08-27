@@ -20,19 +20,39 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.H
             UpdateContactRequestCommand command = new()
             {
                 ContactId = Guid.NewGuid(),
-                ContactName = new()
+                CurrentContactData = new()
                 {
-                    FirstName = _faker.Name.FirstName(),
-                    LastName = _faker.Name.LastName()
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 },
-                ContactEmail = new()
+                UpdatedContactData = new()
                 {
-                    Address = _faker.Internet.Email()
-                },
-                ContactPhone = new()
-                {
-                    AreaCode = "11",
-                    Number = _faker.Phone.PhoneNumber("9########")
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 }
             };
             string requestBody = JsonSerializer.Serialize(command);
@@ -54,19 +74,39 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.H
             UpdateContactRequestCommand command = new()
             {
                 ContactId = Guid.NewGuid(),
-                ContactName = new()
+                CurrentContactData = new()
                 {
-                    FirstName = _faker.Name.FirstName(),
-                    LastName = _faker.Name.LastName()
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 },
-                ContactEmail = new()
+                UpdatedContactData = new()
                 {
-                    Address = _faker.Internet.Email()
-                },
-                ContactPhone = new()
-                {
-                    AreaCode = "11",
-                    Number = _faker.Phone.PhoneNumber("9########")
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 }
             };
             XmlSerializer xmlSerializer = new(typeof(UpdateContactRequestCommand));
@@ -104,19 +144,39 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.H
             UpdateContactRequestCommand command = new()
             {
                 ContactId = Guid.NewGuid(),
-                ContactName = new()
+                CurrentContactData = new()
                 {
-                    FirstName = _faker.Name.FirstName(),
-                    LastName = _faker.Name.LastName()
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 },
-                ContactEmail = new()
+                UpdatedContactData = new()
                 {
-                    Address = _faker.Internet.Email()
-                },
-                ContactPhone = new()
-                {
-                    AreaCode = "11",
-                    Number = _faker.Phone.PhoneNumber("9########")
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
                 }
             };
             string requestBody = JsonSerializer.Serialize(command);
