@@ -9,5 +9,6 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notificatio
         bool HasNotification(NotificationType notificationType);
         IEnumerable<Notification> GetNotifications();
         void Handle(Notification notification);
+        void Handle(IEnumerable<Notification> notifications);
     }
 }

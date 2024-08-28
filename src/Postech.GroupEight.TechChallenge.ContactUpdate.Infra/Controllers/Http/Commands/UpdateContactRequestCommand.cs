@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands
 {
@@ -14,6 +15,35 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.
 
         [JsonPropertyName("updatedContactData")]
         public required UpdatedContactDataRequestCommand UpdatedContactData { get; init; }
+
+        internal UpdateContactInput AsUpdateContactInput()
+        {
+            return new()
+            {
+                ContactId = ContactId,
+                CurrentContactData = new()
+                {
+                    ContactFirstName = CurrentContactData.ContactName.FirstName,
+                    ContactLastName = CurrentContactData.ContactName.LastName,
+                    ContactEmail = CurrentContactData.ContactEmail.Address,
+                    ContactPhoneNumber = CurrentContactData.ContactPhone.Number,
+                    ContactPhoneNumberAreaCode = CurrentContactData.ContactPhone.AreaCode
+                },
+                UpdatedContactData = new()
+                {
+                    ContactFirstName = UpdatedContactData.ContactName.FirstName,
+                    ContactLastName = UpdatedContactData.ContactName.LastName,
+                    ContactEmail = UpdatedContactData.ContactEmail.Address,
+                    ContactPhoneNumber = UpdatedContactData.ContactPhone.Number,
+                    ContactPhoneNumberAreaCode = UpdatedContactData.ContactPhone.AreaCode
+                },
+            };
+        }
+
+        internal bool HasSameContactId(Guid contactId)
+        {
+            return ContactId.Equals(contactId);
+        }
     }
 
     [ExcludeFromCodeCoverage]

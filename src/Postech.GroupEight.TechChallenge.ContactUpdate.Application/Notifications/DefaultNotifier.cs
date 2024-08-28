@@ -18,6 +18,14 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notificatio
             _notifications.Add(notification);
         }
 
+        public void Handle(IEnumerable<Notification> notifications)
+        {
+            foreach (Notification notification in notifications)
+            {
+                Handle(notification);
+            }
+        }
+
         public bool HasNotification()
         {
             return _notifications.Count != 0;

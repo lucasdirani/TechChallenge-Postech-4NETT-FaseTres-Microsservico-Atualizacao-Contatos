@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications.Enumerators;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications.Models;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Application.Notifications
 {
@@ -12,16 +13,37 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
         {
             // Arrange
             DefaultNotifier notifier = new();   
-            int notificationsCount = 100;        
+            int notificationsCount = 100;      
 
             // Act
             for (int i = 0; i < notificationsCount; i++)
             {
-                notifier.Handle(new() {
+                notifier.Handle(new Notification() {
                     Message = $"Notification {i + 1}",
                     Type = NotificationType.Info
                 });
             }
+
+            // Assert
+            notifier.GetNotifications().Count().Should().Be(notificationsCount);
+            notifier.HasNotification().Should().BeTrue();
+            notifier.HasNotification(NotificationType.Info).Should().BeTrue();
+        }
+
+        [Fact(DisplayName = "Add a list of notifications")]
+        [Trait("Action", "Handle")]
+        public void Handle_AddListOfNotifications_ShouldNotifierBeInACorrectState()
+        {
+            // Arrange
+            DefaultNotifier notifier = new();   
+            int notificationsCount = 100;   
+            IEnumerable<Notification> notifications = Enumerable.Range(1, notificationsCount).Select(i => new Notification() {
+                Message = $"Notification {i}",
+                Type = NotificationType.Info
+            });
+
+            // Act
+            notifier.Handle(notifications);
 
             // Assert
             notifier.GetNotifications().Count().Should().Be(notificationsCount);
