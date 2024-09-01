@@ -1,3 +1,4 @@
+using Postech.GroupEight.TechChallenge.ContactManagement.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces 

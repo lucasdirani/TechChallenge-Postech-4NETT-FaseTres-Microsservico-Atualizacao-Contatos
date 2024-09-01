@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Infra\Postech.GroupEight.TechChallenge.ContactUpdate.Infra.csproj" />
+    <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Application\Postech.GroupEight.TechChallenge.ContactUpdate.Application.csproj" />
   </ItemGroup>
 
 </Project>

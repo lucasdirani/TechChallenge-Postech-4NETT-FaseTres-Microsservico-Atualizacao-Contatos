@@ -21,18 +21,5 @@
             "write": ".*",
             "read": ".*"
         }
-    ],
-    "queues": [
-        {
-            "name": "contact.update",
-            "vhost": "/",
-            "durable": true,
-            "arguments": {
-                "x-message-ttl": 600000,
-                "x-overflow": "reject-publish",
-                "x-single-active-consumer": true,
-                "x-max-length": 1000
-            }
-        }
     ]
 }

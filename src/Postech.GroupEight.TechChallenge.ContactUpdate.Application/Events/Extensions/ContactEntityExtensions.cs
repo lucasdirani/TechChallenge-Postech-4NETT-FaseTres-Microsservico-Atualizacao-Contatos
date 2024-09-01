@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Entities;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 

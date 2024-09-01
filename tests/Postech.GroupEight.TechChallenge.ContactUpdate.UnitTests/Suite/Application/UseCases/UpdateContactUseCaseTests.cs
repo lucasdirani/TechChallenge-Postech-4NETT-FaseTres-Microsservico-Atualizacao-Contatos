@@ -1,7 +1,7 @@
 using Bogus;
 using FluentAssertions;
 using Moq;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results.Enumerators;

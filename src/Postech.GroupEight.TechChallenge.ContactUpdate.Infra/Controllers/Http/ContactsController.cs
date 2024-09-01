@@ -33,7 +33,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http
                     notifier.Handle(new Notification() { Message = "Contact identifier is different between route and body parameter", Type = NotificationType.Error });
                     return new() { Messages = notifier.GetNotifications() };
                 }       
-                AbstractValidator<UpdateContactRequestCommand> validator = serviceProvider.GetRequiredService<AbstractValidator<UpdateContactRequestCommand>>();
+                IValidator<UpdateContactRequestCommand> validator = serviceProvider.GetRequiredService<IValidator<UpdateContactRequestCommand>>();
                 ValidationResult validationResult = await validator.ValidateAsync(body);
                 if (!validationResult.IsValid)
                 {

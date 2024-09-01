@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Headers.Interfaces;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Headers

@@ -1,11 +1,20 @@
+using Postech.GroupEight.TechChallenge.ContactUpdate.Api.Setup;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDependencyFluentValidation();
+builder.Services.AddDependencyRequestCorrelationId();
+builder.Services.AddDependencyNotifier();
+builder.Services.AddDependencyRabbitMQ(configuration);
+builder.Services.AddDependencyEventPublisher();
+builder.Services.AddDependencyUseCase();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {

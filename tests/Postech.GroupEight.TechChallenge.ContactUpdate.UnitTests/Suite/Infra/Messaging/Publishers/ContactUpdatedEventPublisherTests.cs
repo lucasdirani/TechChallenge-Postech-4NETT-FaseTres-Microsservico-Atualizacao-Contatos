@@ -1,12 +1,11 @@
 using Bogus;
 using FluentAssertions;
 using Moq;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results.Enumerators;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Endpoints;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Headers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Publishers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Requests.Context;
@@ -33,7 +32,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.M
             };
             ContactUpdatedQueueMessageHeader header = new(_requestCorrelationId.GetCorrelationId(), contactUpdatedEvent.ContactId);
             Mock<IQueue> queue = new();
-            queue.Setup(q => q.PublishMessageAsync(contactUpdatedEvent, header, QueueEndpoint.ContactUpdated));
+            queue.Setup(q => q.PublishMessageAsync(contactUpdatedEvent, header));
             ContactUpdatedEventPublisher publisher = new(queue.Object, _requestCorrelationId);
 
             // Act
@@ -62,7 +61,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.M
             ContactUpdatedQueueMessageHeader header = new(_requestCorrelationId.GetCorrelationId(), contactUpdatedEvent.ContactId);
             Mock<IQueue> queue = new();
             queue
-                .Setup(q => q.PublishMessageAsync(contactUpdatedEvent, header, QueueEndpoint.ContactUpdated))
+                .Setup(q => q.PublishMessageAsync(contactUpdatedEvent, header))
                 .ThrowsAsync(new Exception("Failed to publish event to integration queue"));
             ContactUpdatedEventPublisher publisher = new(queue.Object, _requestCorrelationId);
 

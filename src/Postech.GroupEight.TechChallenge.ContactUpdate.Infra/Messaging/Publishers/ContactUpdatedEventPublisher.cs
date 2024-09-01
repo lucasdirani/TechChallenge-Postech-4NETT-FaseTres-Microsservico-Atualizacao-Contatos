@@ -1,8 +1,7 @@
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results.Enumerators;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Endpoints;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Headers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Requests.Context.Interfaces;
 
@@ -18,7 +17,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Publish
             try 
             {
                 ContactUpdatedQueueMessageHeader header = new(_requestCorrelationId.GetCorrelationId(), eventData.ContactId);
-                await _queue.PublishMessageAsync(eventData, header, QueueEndpoint.ContactUpdated);
+                await _queue.PublishMessageAsync(eventData, header);
                 return new() {
                     EventId = eventData.ContactId,
                     PublishedAt = DateTime.UtcNow,

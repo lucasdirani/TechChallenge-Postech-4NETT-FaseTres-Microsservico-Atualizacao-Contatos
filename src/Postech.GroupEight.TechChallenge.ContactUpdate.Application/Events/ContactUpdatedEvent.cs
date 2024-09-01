@@ -1,6 +1,6 @@
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
+using Postech.GroupEight.TechChallenge.ContactManagement.Events.Interfaces;
 
-namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events
+namespace Postech.GroupEight.TechChallenge.ContactManagement.Events
 {
     public record ContactUpdatedEvent : IApplicationEvent
     {
@@ -9,6 +9,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events
         public required string ContactLastName { get; init; }
         public required string ContactEmail { get; init; }
         public required string ContactPhoneNumber { get; init; }
+        public string EventType { get; init; } = nameof(ContactUpdatedEvent);
 
         public Guid GetEventId() => ContactId;
     }
