@@ -43,15 +43,6 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Api.Setup
                         cb.ActiveThreshold = connectionConfiguration.CircuitBreakerConfiguration.ActiveThreshold;
                         cb.ResetInterval = TimeSpan.FromMinutes(connectionConfiguration.CircuitBreakerConfiguration.ResetIntervalInMinutes); 
                     });
-                    cfg.ReceiveEndpoint("contact.update", re =>
-                    {
-                        re.ConfigureConsumeTopology = false;
-                        re.Bind("contact.management", e =>
-                        {
-                            e.RoutingKey = nameof(ContactUpdatedEvent);
-                            e.ExchangeType = "direct";
-                        });
-                    });
                 });
             });
             services.AddScoped<IQueue, RabbitMQAdapter>();
