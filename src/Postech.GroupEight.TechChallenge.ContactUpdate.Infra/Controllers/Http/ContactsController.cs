@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications.Enumerators;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notifications.Models;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Outputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands;
@@ -41,13 +42,22 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http
                     return new() { Messages = notifier.GetNotifications() };
                 }
                 IUpdateContactUseCase useCase = serviceProvider.GetRequiredService<IUpdateContactUseCase>();
-                UpdateContactOutput updateContactOutput = await useCase.ExecuteAsync(body.AsUpdateContactInput());
-                if (!updateContactOutput.IsContactNotifiedForUpdate)
+                UpdateContactOutput? updateContactOutput = null;
+                try
                 {
-                    notifier.Handle(new Notification() { Message = "Unable to request contact update. Please try again.", Type = NotificationType.Error });
+                    updateContactOutput = await useCase.ExecuteAsync(body.AsUpdateContactInput());
+                    if (!updateContactOutput.IsContactNotifiedForUpdate)
+                    {
+                        notifier.Handle(new Notification() { Message = "Unable to request contact update. Please try again.", Type = NotificationType.Error });
+                        return new() { Messages = notifier.GetNotifications() };
+                    }
+                }
+                catch (UpdateContactInputException ex)
+                {
+                    notifier.Handle(new Notification() { Message = ex.Message, Type = NotificationType.Error });
                     return new() { Messages = notifier.GetNotifications() };
                 }
-                return new() { Data = updateContactOutput.AsUpdateContactResponseCommand() };
+                return new() { Data = updateContactOutput?.AsUpdateContactResponseCommand() };
             });
         }
     }

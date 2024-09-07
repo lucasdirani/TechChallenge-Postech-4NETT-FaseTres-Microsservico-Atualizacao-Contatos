@@ -467,5 +467,65 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
             responseMessageContent.Should().NotBeNull();
             responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
         }
+
+        [Fact(DisplayName = "Updating a contact with the same data currently registered at the /contacts/{contactId} endpoint")]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_UpdatingContactWithTheSameDataCurrentlyRegistered_ShouldReturn400BadRequest()
+        {
+            // Arrange
+            Guid contactId = Guid.NewGuid();
+            CurrentContactDataRequestCommand currentContactData = new()
+            {
+                ContactName = new()
+                {
+                    FirstName = _faker.Name.FirstName(),
+                    LastName = _faker.Name.LastName()
+                },
+                ContactEmail = new()
+                {
+                    Address = _faker.Internet.Email()
+                },
+                ContactPhone = new()
+                {
+                    AreaCode = "11",
+                    Number = _faker.Phone.PhoneNumber("9########")
+                }
+            };
+            UpdatedContactDataRequestCommand updatedContactData = new()
+            {
+                ContactName = new()
+                {
+                    FirstName = currentContactData.ContactName.FirstName,
+                    LastName = currentContactData.ContactName.LastName
+                },
+                ContactEmail = new()
+                {
+                    Address = currentContactData.ContactEmail.Address
+                },
+                ContactPhone = new()
+                {
+                    AreaCode = currentContactData.ContactPhone.AreaCode,
+                    Number = currentContactData.ContactPhone.Number
+                }
+            };
+            UpdateContactRequestCommand requestCommand = new()
+            {
+                ContactId = contactId,
+                CurrentContactData = currentContactData,
+                UpdatedContactData = updatedContactData
+            };
+
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{contactId}")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestCommand), Encoding.UTF8, "application/json"),
+            });
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
+            responseMessageContent.Should().NotBeNull();
+            responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
     }
 }
