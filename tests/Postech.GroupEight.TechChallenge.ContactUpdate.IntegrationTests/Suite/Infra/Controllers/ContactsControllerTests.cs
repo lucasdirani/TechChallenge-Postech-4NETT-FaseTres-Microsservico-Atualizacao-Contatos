@@ -527,5 +527,64 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
             responseMessageContent.Should().NotBeNull();
             responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
         }
+
+        [Fact(DisplayName = "Contact identifier differs between request body and path data at the /contacts/{contactId} endpoint")]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_ContactIdentifierDiffersBetweenRequestBodyAndPathData_ShouldReturn400BadRequest()
+        {
+            // Arrange
+            Guid bodyContactId = Guid.NewGuid();
+            Guid pathContactId = Guid.NewGuid();
+            UpdateContactRequestCommand requestCommand = new()
+            {
+                ContactId = bodyContactId,
+                CurrentContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                },
+                UpdatedContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "21",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                }
+            };
+
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{pathContactId}")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestCommand), Encoding.UTF8, "application/json"),
+            });
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
+            responseMessageContent.Should().NotBeNull();
+            responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
     }
 }
