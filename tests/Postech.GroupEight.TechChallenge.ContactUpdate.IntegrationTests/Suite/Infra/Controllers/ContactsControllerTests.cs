@@ -776,7 +776,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
         [Theory(DisplayName = "Phone number that will be updated for the contact provided incorrectly at the /contacts/{contactId} endpoint")]
         [InlineData("")]
         [InlineData(" ")]
-        [InlineData("nome.sobrenome.extremamente.longo.que.ultrapassa.sessenta.caracteres@email.com")]
+        [InlineData("9768542")]
+        [InlineData("9768542836")]
         [InlineData(null)]
         [Trait("Action", "/contacts/{contactId}")]
         public async Task UpdateContactEndpoint_PhoneNumberThatWillBeUpdatedForTheContactProvidedIncorrectly_ShouldReturn400BadRequest(string updatedContactPhoneNumber)
@@ -818,6 +819,71 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
                     {
                         AreaCode = "21",
                         Number = updatedContactPhoneNumber
+                    }
+                }
+            };
+
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{contactId}")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestCommand), Encoding.UTF8, "application/json"),
+            });
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
+            responseMessageContent.Should().NotBeNull();
+            responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
+
+        [Theory(DisplayName = "Phone area code that will be updated for the contact provided incorrectly at the /contacts/{contactId} endpoint")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("2")]
+        [InlineData("1A")]
+        [InlineData("105")]
+        [InlineData("BB")]
+        [InlineData(null)]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_PhoneAreaCodeThatWillBeUpdatedForTheContactProvidedIncorrectly_ShouldReturn400BadRequest(string updatedContactPhoneAreaCode)
+        {
+            // Arrange
+            Guid contactId = Guid.NewGuid();
+            UpdateContactRequestCommand requestCommand = new()
+            {
+                ContactId = contactId,
+                CurrentContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                },
+                UpdatedContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = updatedContactPhoneAreaCode,
+                        Number = _faker.Phone.PhoneNumber("9########")
                     }
                 }
             };
