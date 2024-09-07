@@ -77,5 +77,22 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
             responseMessageContent?.Data?.IsContactNotifiedForUpdate.Should().BeTrue();
             responseMessageContent?.Messages.Should().BeNull();
         }
+
+        [Fact(DisplayName = "Request body not provided for /contacts/{contactId} endpoint")]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_RequestBodyNotProvided_ShouldReturn400BadRequest()
+        {
+            // Arrange
+            Guid contactId = Guid.NewGuid();
+
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{contactId}"));
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
+            responseMessageContent.Should().NotBeNull();
+            responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
     }
 }
