@@ -402,5 +402,70 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
             responseMessageContent.Should().NotBeNull();
             responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
         }
+
+        [Theory(DisplayName = "Phone area code currently registered for contact provided incorrectly at the /contacts/{contactId} endpoint")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData("2")]
+        [InlineData("1A")]
+        [InlineData("105")]
+        [InlineData("BB")]
+        [InlineData(null)]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_PhoneAreaCodeCurrentlyRegisteredForContactProvidedIncorrectly_ShouldReturn400BadRequest(string currentContactPhoneAreaCode)
+        {
+            // Arrange
+            Guid contactId = Guid.NewGuid();
+            UpdateContactRequestCommand requestCommand = new()
+            {
+                ContactId = contactId,
+                CurrentContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = currentContactPhoneAreaCode,
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                },
+                UpdatedContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "21",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                }
+            };
+
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{contactId}")
+            {
+                Content = new StringContent(JsonSerializer.Serialize(requestCommand), Encoding.UTF8, "application/json"),
+            });
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
+            responseMessageContent.Should().NotBeNull();
+            responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
     }
 }
