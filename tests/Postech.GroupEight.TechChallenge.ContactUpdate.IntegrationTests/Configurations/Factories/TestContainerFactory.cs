@@ -15,7 +15,12 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Config
         {
             if (_container is null)
             {
-                _container = new RabbitMqBuilder().WithImage("rabbitmq:3.11").Build();
+                _container = new RabbitMqBuilder()
+                    .WithImage("rabbitmq:3.11")
+                    .WithPortBinding(5672, 5672)
+                    .WithUsername("guest")
+                    .WithPassword("guest")
+                    .Build();
                 await _container.StartAsync();
                 RabbitMqConnectionString = _container.GetConnectionString();
             }

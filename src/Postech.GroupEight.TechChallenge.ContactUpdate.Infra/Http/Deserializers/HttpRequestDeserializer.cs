@@ -10,6 +10,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Deserializer
             return string.IsNullOrEmpty(requestBody) ? default : contentType switch
             {
                 "application/json" => JsonSerializer.Deserialize<TRequest>(requestBody),
+                "application/json; charset=utf-8" => JsonSerializer.Deserialize<TRequest>(requestBody),
                 _ => throw new HttpResponseDeserializerException("The given content type is not supported", contentType)
             };
         }
