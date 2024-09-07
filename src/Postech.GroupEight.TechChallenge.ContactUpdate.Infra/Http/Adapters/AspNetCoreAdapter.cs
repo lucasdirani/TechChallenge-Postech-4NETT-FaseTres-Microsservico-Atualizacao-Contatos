@@ -30,7 +30,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters
                 GenericResponseCommand<TResponse> responseContent = await callback(body, routeValues, context.RequestServices);
                 HttpResponseSerializeResult serializeResult = HttpResponseSerializer.Serialize(responseContent, context.Request.Headers.Accept);
                 context.Response.ContentType = serializeResult.ContentType;
-                context.Response.StatusCode = responseContent.IsSuccessfullyProcessed ? successfulStatusCode : failureStatusCode;
+                context.Response.StatusCode = responseContent.IfProcessedSuccessfully(successfulStatusCode).IfProcessedWithError(failureStatusCode).GetResponseStatusCode();
                 await context.Response.WriteAsync(serializeResult.Data);
             });
         }

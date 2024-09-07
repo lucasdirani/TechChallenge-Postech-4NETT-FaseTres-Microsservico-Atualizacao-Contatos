@@ -15,5 +15,28 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.
 
         [JsonPropertyName("isSuccessfullyProcessed")]
         public bool IsSuccessfullyProcessed => Data is not null;
+
+        [JsonIgnore]
+        private int StatusCode { get; set; }
+
+        public GenericResponseCommand<T> IfProcessedSuccessfully(int successfulStatusCode)
+        {
+            if (IsSuccessfullyProcessed)
+            {
+                StatusCode = successfulStatusCode;
+            }
+            return this;
+        }
+
+        public GenericResponseCommand<T> IfProcessedWithError(int failureStatusCode)
+        {
+            if (!IsSuccessfullyProcessed)
+            {
+                StatusCode = failureStatusCode;
+            }
+            return this;
+        }
+
+        public int GetResponseStatusCode() => StatusCode;
     }
 }
