@@ -1,8 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Deserializers;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Deserializers.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Serializers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Serializers.Results;
@@ -24,14 +26,22 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters
         {
             _app.MapMethods(url, [method.ToUpper()], async context =>
             {
-                string? requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
-                TRequest? body = HttpRequestDeserializer.Deserialize<TRequest>(requestBody, context.Request.Headers.ContentType);
-                IDictionary<string, object?> routeValues = context.Request.GetRouteValues();
-                GenericResponseCommand<TResponse> responseContent = await callback(body, routeValues, context.RequestServices);
-                HttpResponseSerializeResult serializeResult = HttpResponseSerializer.Serialize(responseContent, context.Request.Headers.Accept);
-                context.Response.ContentType = serializeResult.ContentType;
-                context.Response.StatusCode = responseContent.IfProcessedSuccessfully(successfulStatusCode).IfProcessedWithError(failureStatusCode).GetResponseStatusCode();
-                await context.Response.WriteAsync(serializeResult.Data);
+                try
+                {
+                    string? requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
+                    TRequest? body = HttpRequestDeserializer.Deserialize<TRequest>(requestBody, context.Request.Headers.ContentType);
+                    IDictionary<string, object?> routeValues = context.Request.GetRouteValues();
+                    GenericResponseCommand<TResponse> responseContent = await callback(body, routeValues, context.RequestServices);
+                    HttpResponseSerializeResult serializeResult = HttpResponseSerializer.Serialize(responseContent, context.Request.Headers.Accept);
+                    context.Response.ContentType = serializeResult.ContentType;
+                    context.Response.StatusCode = responseContent.IfProcessedSuccessfully(successfulStatusCode).IfProcessedWithError(failureStatusCode).GetResponseStatusCode();
+                    await context.Response.WriteAsync(serializeResult.Data);
+                }
+                catch (HttpResponseDeserializerException ex)
+                {
+                    context.Response.StatusCode = (int) HttpStatusCode.UnsupportedMediaType;
+                    await context.Response.WriteAsync(ex.Message);
+                }
             });
         }
 

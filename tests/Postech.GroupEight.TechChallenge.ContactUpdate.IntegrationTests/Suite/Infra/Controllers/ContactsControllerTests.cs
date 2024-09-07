@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Serialization;
 using Bogus;
 using FluentAssertions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands;
@@ -93,6 +94,64 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.IntegrationTests.Suite.
             GenericResponseCommand<UpdateContactResponseCommand>? responseMessageContent = await responseMessage.Content.AsAsync<GenericResponseCommand<UpdateContactResponseCommand>>();
             responseMessageContent.Should().NotBeNull();
             responseMessageContent?.Messages.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact(DisplayName = "Content-Type not supported for /contacts/{contactId} endpoint")]
+        [Trait("Action", "/contacts/{contactId}")]
+        public async Task UpdateContactEndpoint_ContentTypeNotSupported_ShouldReturn415UnsupportedMediaType()
+        {
+            // Arrange
+            Guid contactId = Guid.NewGuid();
+            UpdateContactRequestCommand requestCommand = new()
+            {
+                ContactId = contactId,
+                CurrentContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "11",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                },
+                UpdatedContactData = new()
+                {
+                    ContactName = new()
+                    {
+                        FirstName = _faker.Name.FirstName(),
+                        LastName = _faker.Name.LastName()
+                    },
+                    ContactEmail = new()
+                    {
+                        Address = _faker.Internet.Email()
+                    },
+                    ContactPhone = new()
+                    {
+                        AreaCode = "21",
+                        Number = _faker.Phone.PhoneNumber("9########")
+                    }
+                }
+            };
+            XmlSerializer serializer = new(typeof(UpdateContactRequestCommand));
+            using StringWriter stringWriter = new();
+            serializer.Serialize(stringWriter, requestCommand);
+            
+            // Act
+            using HttpResponseMessage responseMessage = await HttpClient.SendAsync(new HttpRequestMessage(HttpMethod.Patch, $"/contacts/{contactId}")
+            {
+                Content = new StringContent(stringWriter.ToString(), Encoding.UTF8, "application/xml"),
+            });
+
+            // Assert
+            responseMessage.StatusCode.Should().Be(HttpStatusCode.UnsupportedMediaType);
         }
     }
 }
