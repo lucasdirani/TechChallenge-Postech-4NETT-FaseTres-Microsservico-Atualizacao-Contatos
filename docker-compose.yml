@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   # RabbitMQ Queue
   rabbitmq:
     image: rabbitmq:3-management
@@ -16,6 +17,27 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
       - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    networks:
+      - monitoring
+
+  # .NET Application
+  web:
+    build:
+      context: .
+      dockerfile: src/Postech.GroupEight.TechChallenge.ContactUpdate.Api/Dockerfile
+    container_name: dotnet_app
+    restart: always
+    ports:
+      - "5006:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      - rabbitmq
+    networks:
+      - monitoring 
+
+networks:
+  monitoring:
     
 volumes:
   rabbitmq_data:
