@@ -6,6 +6,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Comm
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Deserializers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Deserializers.Exceptions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Interfaces;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.OpenApi.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Serializers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Serializers.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Requests.Extensions;
@@ -21,10 +22,11 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters
             string method, 
             string url, 
             Func<TRequest?, IDictionary<string, object?>, IServiceProvider, Task<GenericResponseCommand<TResponse>>> callback,
+            IEndpointOpenApiDocumentation openApiDocumentation,           
             int successfulStatusCode,
             int failureStatusCode)
         {
-            _app.MapMethods(url, [method.ToUpper()], async context =>
+            _app.MapMethods(url, [method.ToUpper()], async (HttpContext context, CancellationToken token) =>
             {
                 try
                 {
@@ -42,7 +44,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters
                     context.Response.StatusCode = (int) HttpStatusCode.UnsupportedMediaType;
                     await context.Response.WriteAsync(ex.Message);
                 }
-            });
+            })
+            .WithOpenApi();
         }
 
         public void Run()

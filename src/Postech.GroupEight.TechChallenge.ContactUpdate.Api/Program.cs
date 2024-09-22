@@ -10,7 +10,7 @@ builder.Configuration.AddJsonFileByEnvironment(builder.Environment.EnvironmentNa
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenConfiguration();
 builder.Services.AddDependencyFluentValidation();
 builder.Services.AddDependencyRequestCorrelationId();
 builder.Services.AddDependencyNotifier();
@@ -23,7 +23,8 @@ WebApplication app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1")); 
 }
 
 app.UseMetricServer();
