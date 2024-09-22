@@ -13,11 +13,14 @@ COPY ["src/Postech.GroupEight.TechChallenge.ContactUpdate.Api/Postech.GroupEight
 RUN dotnet restore "src/Postech.GroupEight.TechChallenge.ContactUpdate.Api/Postech.GroupEight.TechChallenge.ContactUpdate.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Postech.GroupEight.TechChallenge.ContactUpdate.Api"
-RUN dotnet build "Postech.GroupEight.TechChallenge.ContactUpdate.Api.csproj" -c $configuration -o /app/build
+RUN dotnet build "Postech.GroupEight.TechChallenge.ContactUpdate.Api.csproj" -c "$configuration" -o /app/build
 
 FROM build AS publish
 ARG configuration=Release
-RUN dotnet publish "Postech.GroupEight.TechChallenge.ContactUpdate.Api.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Postech.GroupEight.TechChallenge.ContactUpdate.Api.csproj" \
+    -c "$configuration" \
+    -o /app/publish \
+    /p:UseAppHost=false
 
 FROM build AS final
 WORKDIR /app
