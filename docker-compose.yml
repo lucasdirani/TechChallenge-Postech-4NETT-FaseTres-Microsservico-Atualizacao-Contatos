@@ -2,26 +2,6 @@ version: '3.8'
 
 services:
 
-  # RabbitMQ Queue
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-      - "15692:15692"
-    environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
-      RABBITMQ_DEFAULT_VHOST: /
-      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbitmq_prometheus"
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-    networks:
-      - monitoring
-
   # .NET Application
   dotnet_contactupdate_app:
     build:
@@ -30,59 +10,12 @@ services:
     container_name: dotnet_contactupdate_app
     restart: always
     ports:
-      - "5006:8081"
+      - "5010:5010"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-    depends_on:
-      - rabbitmq
+      ASPNETCORE_ENVIRONMENT: "Docker"
     networks:
       - monitoring 
-
-  # Prometheus
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    restart: always
-    ports:
-      - "9090:9090"
-    networks:
-      - monitoring
-    depends_on:
-      - dotnet_contactupdate_app
-
-  # Grafana
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: always
-    ports:
-      - "3000:3000"
-    networks:
-      - monitoring
-    depends_on:
-      - prometheus
-
-  # cAdvisor
-  cadvisor:
-    image: google/cadvisor:latest
-    container_name: cAdvisor
-    restart: always
-    ports:
-      - "8080:8080"
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /etc/machine-id:/etc/machine-id:ro
-    networks:
-      - monitoring
 
 networks:
   monitoring:
     external: true
-    
-volumes:
-  rabbitmq_data:
