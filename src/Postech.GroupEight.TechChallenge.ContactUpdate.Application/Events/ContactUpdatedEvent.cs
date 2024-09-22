@@ -12,6 +12,8 @@ namespace Postech.GroupEight.TechChallenge.ContactManagement.Events
         public required string ContactLastName { get; init; }
         public required string ContactEmail { get; init; }
         public required string ContactPhoneNumber { get; init; }
+        public required string ContactPhoneNumberAreaCode { get; init; }
+        
         [JsonIgnore]
         public string EventType { get; init; } = nameof(ContactUpdatedEvent);
 

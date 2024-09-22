@@ -4,7 +4,6 @@ using Moq;
 using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results.Enumerators;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Headers;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Messaging.Publishers;
@@ -27,7 +26,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.M
                 ContactId = Guid.NewGuid(),
                 ContactFirstName = _faker.Name.FirstName(),
                 ContactLastName = _faker.Name.LastName(),
-                ContactPhoneNumber = ContactPhoneValueObject.Format("11", _faker.Phone.PhoneNumber("9########")),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "11",
                 ContactEmail = _faker.Internet.Email()
             };
             ContactUpdatedQueueMessageHeader header = new(_requestCorrelationId.GetCorrelationId(), contactUpdatedEvent.ContactId);
@@ -55,7 +55,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Infra.M
                 ContactId = Guid.NewGuid(),
                 ContactFirstName = _faker.Name.FirstName(),
                 ContactLastName = _faker.Name.LastName(),
-                ContactPhoneNumber = ContactPhoneValueObject.Format("11", _faker.Phone.PhoneNumber("9########")),
+                ContactPhoneNumber = _faker.Phone.PhoneNumber("9########"),
+                ContactPhoneNumberAreaCode = "11",
                 ContactEmail = _faker.Internet.Email()
             };
             ContactUpdatedQueueMessageHeader header = new(_requestCorrelationId.GetCorrelationId(), contactUpdatedEvent.ContactId);

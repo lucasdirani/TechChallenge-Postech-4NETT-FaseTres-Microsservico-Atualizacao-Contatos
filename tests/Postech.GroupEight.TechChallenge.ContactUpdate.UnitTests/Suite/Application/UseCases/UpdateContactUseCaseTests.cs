@@ -10,7 +10,6 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Except
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Outputs;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Exceptions.ValueObjects;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Application.UseCases 
 {
@@ -55,7 +54,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
                     ContactFirstName = updatedContactDataInput.ContactFirstName,
                     ContactLastName = updatedContactDataInput.ContactLastName,
                     ContactEmail = updatedContactDataInput.ContactEmail,
-                    ContactPhoneNumber = ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber),
+                    ContactPhoneNumber = updatedContactDataInput.ContactPhoneNumber,
+                    ContactPhoneNumberAreaCode = updatedContactDataInput.ContactPhoneNumberAreaCode
                 }))
                 .ReturnsAsync(() => new PublishedEventResult()
                 {
@@ -75,7 +75,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             updateContactOutput.ContactFirstName.Should().Be(updatedContactDataInput.ContactFirstName);
             updateContactOutput.ContactLastName.Should().Be(updatedContactDataInput.ContactLastName);
             updateContactOutput.ContactEmail.Should().Be(updatedContactDataInput.ContactEmail);
-            updateContactOutput.ContactPhoneNumber.Should().Be(ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber));
+            updateContactOutput.ContactPhoneNumber.Should().Be(updatedContactDataInput.ContactPhoneNumber);
+            updateContactOutput.ContactPhoneNumberAreaCode.Should().Be(updatedContactDataInput.ContactPhoneNumberAreaCode);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Once());
         }
 
@@ -380,7 +381,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
                     ContactFirstName = updatedContactDataInput.ContactFirstName,
                     ContactLastName = updatedContactDataInput.ContactLastName,
                     ContactEmail = updatedContactDataInput.ContactEmail,
-                    ContactPhoneNumber = ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber),
+                    ContactPhoneNumber = updatedContactDataInput.ContactPhoneNumber,
+                    ContactPhoneNumberAreaCode = updatedContactDataInput.ContactPhoneNumberAreaCode
                 }))
                 .ReturnsAsync(() => new PublishedEventResult()
                 {
@@ -400,7 +402,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.UnitTests.Suite.Applica
             updateContactOutput.ContactFirstName.Should().Be(updatedContactDataInput.ContactFirstName);
             updateContactOutput.ContactLastName.Should().Be(updatedContactDataInput.ContactLastName);
             updateContactOutput.ContactEmail.Should().Be(updatedContactDataInput.ContactEmail);
-            updateContactOutput.ContactPhoneNumber.Should().Be(ContactPhoneValueObject.Format(updatedContactDataInput.ContactPhoneNumberAreaCode, updatedContactDataInput.ContactPhoneNumber));
+            updateContactOutput.ContactPhoneNumber.Should().Be(updatedContactDataInput.ContactPhoneNumber);
+            updateContactOutput.ContactPhoneNumberAreaCode.Should().Be(updatedContactDataInput.ContactPhoneNumberAreaCode);
             eventPublisher.Verify(e => e.PublishEventAsync(It.Is<ContactUpdatedEvent>(c => c.ContactId.Equals(contactId))), Times.Once());
         }
     }
