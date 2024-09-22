@@ -23,8 +23,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters
             string url, 
             Func<TRequest?, IDictionary<string, object?>, IServiceProvider, Task<GenericResponseCommand<TResponse>>> callback,
             IEndpointOpenApiDocumentation openApiDocumentation,           
-            int successfulStatusCode,
-            int failureStatusCode)
+            int successfulStatusCode = 202,
+            int failureStatusCode = 400)
         {
             _app.MapMethods(url, [method.ToUpper()], async (HttpContext context, CancellationToken token) =>
             {
