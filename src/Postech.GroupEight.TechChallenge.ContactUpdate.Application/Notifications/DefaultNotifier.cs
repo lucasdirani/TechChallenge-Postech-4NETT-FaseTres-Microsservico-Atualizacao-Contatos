@@ -33,7 +33,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Notificatio
 
         public bool HasNotification(NotificationType notificationType)
         {
-            return _notifications.Any(notification => notification.Type.Equals(notificationType));
+            return _notifications.Exists(notification => notification.Type.Equals(notificationType));
         }
     }
 }
