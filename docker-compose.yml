@@ -14,8 +14,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"
     networks:
-      - monitoring 
+      - app-network 
 
 networks:
-  monitoring:
+  app-network:
     external: true

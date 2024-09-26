@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using Microsoft.OpenApi.Models;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Api.Setup
@@ -22,8 +21,6 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Api.Setup
                         Url = new Uri("https://github.com/lucasdirani/TechChallenge-Postech-4NETT-FaseTres-Microsservico-Atualizacao-Contatos")
                     }
                 });
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Postech.GroupEight.TechChallenge.ContactUpdate.Infra.xml"));
                 c.EnableAnnotations();
             });
         }

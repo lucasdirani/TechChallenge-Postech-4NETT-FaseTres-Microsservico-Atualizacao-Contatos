@@ -19,9 +19,4 @@
     <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Application\Postech.GroupEight.TechChallenge.ContactUpdate.Application.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<NoWarn>$(NoWarn);1591</NoWarn>
-	</PropertyGroup>
-
 </Project>
