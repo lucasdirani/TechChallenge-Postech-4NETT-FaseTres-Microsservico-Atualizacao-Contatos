@@ -19,7 +19,8 @@ public record ContactUpdateEndpointOpenApiDocumentation : IEndpointOpenApiDocume
             Description = "This endpoint requests the update of data for a previously registered contact for the persistence microservice.",
             Parameters = GetParametersDocumentation(),
             RequestBody = GetRequestBodyDocumentation(),
-            Responses = GetResponsesDocumentation()
+            Responses = GetResponsesDocumentation(),
+            Tags = [new() { Name = "/contacts"}]
         };
     }
 
