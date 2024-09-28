@@ -14,8 +14,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Docker"
     networks:
-      - app-network 
+      - techchallenge-worker-persistency_custom_network 
 
 networks:
-  app-network:
+  techchallenge-worker-persistency_custom_network:
     external: true

@@ -20,12 +20,9 @@ builder.Services.AddDependencyUseCase();
 
 WebApplication app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.MapSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1")); 
-}
+app.UseSwagger();
+app.MapSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1")); 
 
 app.UseMetricServer();
 app.UseHttpMetrics();
