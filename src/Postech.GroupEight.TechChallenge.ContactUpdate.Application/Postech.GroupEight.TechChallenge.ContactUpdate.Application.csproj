@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Postech.GroupEight.TechChallenge.ContactUpdate.Core\Postech.GroupEight.TechChallenge.ContactUpdate.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>IDE0130</NoWarn>
+  </PropertyGroup>
+
+</Project>
