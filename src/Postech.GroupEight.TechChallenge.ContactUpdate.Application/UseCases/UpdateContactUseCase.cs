@@ -1,5 +1,4 @@
 using Postech.GroupEight.TechChallenge.ContactManagement.Events;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Extensions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Interfaces;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Results;

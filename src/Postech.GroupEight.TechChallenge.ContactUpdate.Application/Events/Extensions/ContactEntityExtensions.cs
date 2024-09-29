@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Postech.GroupEight.TechChallenge.ContactManagement.Events;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Core.Entities;
-using Postech.GroupEight.TechChallenge.ContactUpdate.Core.ValueObjects;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Extensions
 {
@@ -16,7 +15,8 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Application.Events.Exte
                 ContactEmail = contactEntity.ContactEmail.Value,
                 ContactFirstName = contactEntity.ContactName.FirstName,
                 ContactLastName = contactEntity.ContactName.LastName,
-                ContactPhoneNumber = ContactPhoneValueObject.Format(contactEntity.ContactPhone.AreaCode.Value, contactEntity.ContactPhone.Number)
+                ContactPhoneNumber = contactEntity.ContactPhone.Number,
+                ContactPhoneNumberAreaCode = contactEntity.ContactPhone.AreaCode.Value
             };
         }
     }

@@ -12,6 +12,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Comm
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands.Extensions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Validators.Extensions;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Interfaces;
+using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.OpenApi;
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http
 {
@@ -58,7 +59,7 @@ namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http
                     return new() { Messages = notifier.GetNotifications() };
                 }
                 return new() { Data = updateContactOutput?.AsUpdateContactResponseCommand() };
-            });
+            }, new ContactUpdateEndpointOpenApiDocumentation());
         }
     }
 }

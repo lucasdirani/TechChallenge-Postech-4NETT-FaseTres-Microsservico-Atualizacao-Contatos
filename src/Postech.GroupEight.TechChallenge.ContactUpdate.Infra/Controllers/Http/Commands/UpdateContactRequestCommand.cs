@@ -4,7 +4,7 @@ using Postech.GroupEight.TechChallenge.ContactUpdate.Application.UseCases.Inputs
 
 namespace Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http.Commands
 {
-    [ExcludeFromCodeCoverage]
+    [ExcludeFromCodeCoverage]   
     public record UpdateContactRequestCommand
     {
         [JsonPropertyName("contactId")]

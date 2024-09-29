@@ -2,42 +2,20 @@ version: '3.8'
 
 services:
 
-  # RabbitMQ Queue
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
-      RABBITMQ_DEFAULT_VHOST: /
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-    networks:
-      - monitoring
-
   # .NET Application
-  web:
+  dotnet_contactupdate_app:
     build:
       context: .
       dockerfile: src/Postech.GroupEight.TechChallenge.ContactUpdate.Api/Dockerfile
-    container_name: dotnet_app
+    container_name: dotnet_contactupdate_app
     restart: always
     ports:
-      - "5006:8080"
+      - "5010:5010"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-    depends_on:
-      - rabbitmq
+      ASPNETCORE_ENVIRONMENT: "Docker"
     networks:
-      - monitoring 
+      - techchallenge-worker-persistency_custom_network 
 
 networks:
-  monitoring:
-    
-volumes:
-  rabbitmq_data:
+  techchallenge-worker-persistency_custom_network:
+    external: true
