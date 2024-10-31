@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: container-rabbitmq
+          image: rabbitmq:3-management
+          ports:
+            - name: amqp-port
+              containerPort: 5672
+            - name: management-port
+              containerPort: 15672
+            - name: metrics-port
+              containerPort: 15692
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "admin"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "Admin*123"
+            - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
+              value: "-rabbitmq_prometheus"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  type: NodePort
+  ports:
+    - name: amqp-port
+      port: 5672
+      targetPort: 5672
+    - name: management-port
+      port: 15672
+      targetPort: 15672
+      nodePort: 31572
+    - name: metrics-port
+      port: 15692
+      targetPort: 15692
+  selector: 
+    app: rabbitmq
