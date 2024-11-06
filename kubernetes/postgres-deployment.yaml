@@ -6,7 +6,10 @@ type: Opaque
 data:
   POSTGRES_DB: Q29udGFjdE1hbmFnZW1lbnREYg== 
   POSTGRES_USER: YWRtaW4=               
-  POSTGRES_PASSWORD: UEBwcy0wcmQyMDI0IUNhbG1hbA==
+  POSTGRES_PASSWORD: ZzNaY0FVS2I=
+  PGADMIN_DEFAULT_EMAIL: YWRtaW5AcG9zdGVjaC5jb20=
+  PGADMIN_DEFAULT_PASSWORD: QWRtaW4qMTIz
+  DATA_SOURCE_NAME: cG9zdGdyZXNxbDovL2FkbWluOmczWmNBVUtiQHNlcnZpY2UtcG9zdGdyZXMtZGI6NTQzMi9Db250YWN0TWFuYWdlbWVudERiP3NzbG1vZGU9ZGlzYWJsZQ==
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -86,9 +89,15 @@ spec:
               containerPort: 5050
           env:
             - name: PGADMIN_DEFAULT_EMAIL
-              value: "admin@postech.com"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-db-secret
+                  key: PGADMIN_DEFAULT_EMAIL
             - name: PGADMIN_DEFAULT_PASSWORD
-              value: "Admin*123"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-db-secret
+                  key: PGADMIN_DEFAULT_PASSWORD
         - name: container-postgres-exporter
           image: wrouesnel/postgres_exporter:latest
           ports:
@@ -96,7 +105,10 @@ spec:
               containerPort: 9187
           env:
             - name: DATA_SOURCE_NAME
-              value: "postgresql://admin:P@ssW0rd2024!Safe@container-postgres-db:5432/ContactManagementDb?sslmode=disable"
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-db-secret
+                  key: DATA_SOURCE_NAME
       volumes:
         - name: postgres-db-storage
           persistentVolumeClaim:

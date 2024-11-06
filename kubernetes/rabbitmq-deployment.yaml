@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rabbitmq-secret
+type: Opaque
+data:
+  RABBITMQ_DEFAULT_USER: YWRtaW4=
+  RABBITMQ_DEFAULT_PASS: QWRtaW4qMTIz
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,9 +35,15 @@ spec:
               containerPort: 15692
           env:
             - name: RABBITMQ_DEFAULT_USER
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_USER
             - name: RABBITMQ_DEFAULT_PASS
-              value: "Admin*123"
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: RABBITMQ_DEFAULT_PASS
             - name: RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS
               value: "-rabbitmq_prometheus"
 ---
