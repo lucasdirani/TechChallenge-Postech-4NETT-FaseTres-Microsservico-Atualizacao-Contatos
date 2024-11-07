@@ -26,6 +26,11 @@ spec:
       containers:
         - name: container-rabbitmq
           image: rabbitmq:3-management
+          livenessProbe:
+            tcpSocket:
+              port: 5672
+            initialDelaySeconds: 10
+            periodSeconds: 10
           ports:
             - name: amqp-port
               containerPort: 5672
