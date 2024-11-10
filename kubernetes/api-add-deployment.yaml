@@ -37,3 +37,22 @@ spec:
       nodePort: 31199
   selector:
     app: techchallenge-dotnet-contactadd
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-techchallenge-dotnet-contactadd
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: techchallenge-dotnet-contactadd
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
