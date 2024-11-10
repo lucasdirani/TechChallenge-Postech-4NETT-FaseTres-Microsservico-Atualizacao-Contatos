@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: container-techchallenge-dotnet-contactpersistency
-          image: lruizd/techchallenge-dotnet-contactpersistency:v1
+          image: lruizd/techchallenge-dotnet-contactpersistency:latest
           ports:
             - containerPort: 5679
           env:
