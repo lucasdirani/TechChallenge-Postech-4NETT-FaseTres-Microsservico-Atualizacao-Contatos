@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techchallenge-dotnet-contactdelete
+  labels:
+    app: techchallenge-dotnet-contactdelete
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: techchallenge-dotnet-contactdelete
+  template:
+    metadata:
+      labels:
+        app: techchallenge-dotnet-contactdelete
+    spec:
+      containers:
+        - name: container-techchallenge-dotnet-contactdelete
+          image: lruizd/techchallenge-dotnet-contactdelete:latest
+          ports:
+            - containerPort: 5013
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-techchallenge-dotnet-contactdelete
+  labels:
+    app: techchallenge-dotnet-contactdelete
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 5013
+      nodePort: 31195
+  selector:
+    app: service-techchallenge-dotnet-contactdelete
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-techchallenge-dotnet-contactdelete
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: techchallenge-dotnet-contactdelete
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
