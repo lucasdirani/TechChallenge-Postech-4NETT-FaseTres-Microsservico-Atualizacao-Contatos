@@ -16,7 +16,21 @@ spec:
     spec:
       containers:
         - name: container-techchallenge-dotnet-contactupdate
-          image: lruizd/techchallenge-dotnet-contactupdate:v3
+          image: lruizd/techchallenge-dotnet-contactupdate:latest
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5010
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5010
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
           ports:
             - containerPort: 5010
           env:
