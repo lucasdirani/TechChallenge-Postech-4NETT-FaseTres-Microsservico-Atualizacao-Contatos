@@ -36,7 +36,7 @@ spec:
       targetPort: 5013
       nodePort: 31195
   selector:
-    app: service-techchallenge-dotnet-contactdelete
+    app: techchallenge-dotnet-contactdelete
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
