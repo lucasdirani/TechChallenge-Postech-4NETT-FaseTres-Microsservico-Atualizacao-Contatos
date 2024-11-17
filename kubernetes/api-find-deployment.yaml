@@ -13,7 +13,7 @@ metadata:
   labels:
     app: techchallenge-dotnet-contactfind
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: techchallenge-dotnet-contactfind
@@ -47,7 +47,7 @@ spec:
   ports:
     - port: 80
       targetPort: 5266
-      nodePort: 31190
+      nodePort: 31192
   selector:
     app: techchallenge-dotnet-contactfind
 ---
@@ -60,7 +60,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: techchallenge-dotnet-contactfind
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 4
   metrics:
     - type: Resource

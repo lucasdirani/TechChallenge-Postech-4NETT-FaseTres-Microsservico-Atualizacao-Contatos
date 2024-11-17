@@ -5,7 +5,7 @@ metadata:
   labels:
     app: techchallenge-dotnet-contactdelete
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: techchallenge-dotnet-contactdelete
@@ -34,7 +34,7 @@ spec:
   ports:
     - port: 80
       targetPort: 5013
-      nodePort: 31195
+      nodePort: 31191
   selector:
     app: techchallenge-dotnet-contactdelete
 ---
@@ -47,7 +47,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: techchallenge-dotnet-contactdelete
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 4
   metrics:
     - type: Resource

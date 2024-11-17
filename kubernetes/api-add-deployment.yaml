@@ -5,7 +5,7 @@ metadata:
   labels:
     app: techchallenge-dotnet-contactadd
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: techchallenge-dotnet-contactadd
@@ -34,7 +34,7 @@ spec:
   ports:
     - port: 80
       targetPort: 5011
-      nodePort: 31199
+      nodePort: 31190
   selector:
     app: techchallenge-dotnet-contactadd
 ---
@@ -47,7 +47,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: techchallenge-dotnet-contactadd
-  minReplicas: 2
+  minReplicas: 1
   maxReplicas: 4
   metrics:
     - type: Resource

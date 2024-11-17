@@ -138,7 +138,7 @@ spec:
     - name: admin-port
       port: 80
       targetPort: 80
-      nodePort: 32150
+      nodePort: 31194
     - name: exporter-port
       port: 9187
       targetPort: 9187
