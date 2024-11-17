@@ -16,7 +16,21 @@ spec:
     spec:
       containers:
         - name: container-techchallenge-dotnet-contactadd
-          image: lruizd/techchallenge-dotnet-contactadd:v1
+          image: lruizd/techchallenge-dotnet-contactadd:latest
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5011
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5011
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            failureThreshold: 3
           ports:
             - containerPort: 5011
           env:
