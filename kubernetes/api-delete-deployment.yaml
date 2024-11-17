@@ -17,6 +17,20 @@ spec:
       containers:
         - name: container-techchallenge-dotnet-contactdelete
           image: lruizd/techchallenge-dotnet-contactdelete:latest
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5013
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5013
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            failureThreshold: 3
           ports:
             - containerPort: 5013
           env:
