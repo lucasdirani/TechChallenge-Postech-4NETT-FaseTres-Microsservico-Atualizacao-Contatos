@@ -57,7 +57,8 @@ spec:
         - name: container-mongo-db
           image: mongo:latest
           ports:
-            - containerPort: 27017
+            - name: "db-port"
+              containerPort: 27017
           livenessProbe:
             tcpSocket:
               port: 27017
@@ -79,6 +80,24 @@ spec:
           volumeMounts:
             - mountPath: /data/db
               name: mongo-db-storage
+        - name: container-mongo-db-exporter
+          image: bitnami/mongodb-exporter:latest
+          args:
+            - "--mongodb.uri=mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@localhost:27017"
+          ports:
+            - name: "exporter-port"
+              containerPort: 9216
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-db-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
       volumes:
         - name: mongo-db-storage
           persistentVolumeClaim: 
@@ -93,7 +112,11 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 27017
+    - name: db-port
+      port: 27017
       targetPort: 27017
+    - name: exporter-port
+      port: 9216
+      targetPort: 9216
   selector:
     app: mongo-db
