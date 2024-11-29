@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Api.Setup;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Controllers.Http;
 using Postech.GroupEight.TechChallenge.ContactUpdate.Infra.Http.Adapters;
@@ -9,7 +10,6 @@ builder.WebHost.UseUrls("http://*:5010");
 builder.Configuration.AddJsonFileByEnvironment(builder.Environment.EnvironmentName);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerGenConfiguration();
 builder.Services.AddDependencyFluentValidation();
 builder.Services.AddDependencyRequestCorrelationId();
@@ -17,8 +17,15 @@ builder.Services.AddDependencyNotifier();
 builder.Services.AddDependencyRabbitMQ(builder.Configuration);
 builder.Services.AddDependencyEventPublisher();
 builder.Services.AddDependencyUseCase();
+builder.Services.AddHealthChecks().AddRabbitMQHealthCheck();
 
 WebApplication app = builder.Build();
+
+app.MapHealthChecks("/health"); 
+app.MapHealthChecks("/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready")
+});
 
 app.UseSwagger();
 app.MapSwagger();

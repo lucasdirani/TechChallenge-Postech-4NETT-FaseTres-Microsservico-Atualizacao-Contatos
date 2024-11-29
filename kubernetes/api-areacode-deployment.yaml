@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techchallenge-dotnet-contactareacode
+  labels:
+    app: techchallenge-dotnet-contactareacode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: techchallenge-dotnet-contactareacode
+  template:
+    metadata:
+      labels:
+        app: techchallenge-dotnet-contactareacode
+    spec:
+      containers:
+        - name: container-techchallenge-dotnet-contactareacode
+          image: lruizd/techchallenge-dotnet-contactareacode:latest
+          ports:
+            - containerPort: 5012
+          livenessProbe:
+            tcpSocket:
+              port: 5012
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Docker"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-techchallenge-dotnet-contactareacode
+  labels:
+    app: techchallenge-dotnet-contactareacode
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5012
+      targetPort: 5012
+  selector:
+    app: techchallenge-dotnet-contactareacode
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-techchallenge-dotnet-contactareacode
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: techchallenge-dotnet-contactareacode
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
