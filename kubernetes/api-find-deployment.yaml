@@ -49,6 +49,13 @@ spec:
                 secretKeyRef:
                   name: techchallenge-dotnet-contactfind-secret
                   key: MONGO_CONNECTION_STRING
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service

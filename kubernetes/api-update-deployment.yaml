@@ -36,6 +36,13 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Docker"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
@@ -69,4 +76,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 70
+          averageUtilization: 10
