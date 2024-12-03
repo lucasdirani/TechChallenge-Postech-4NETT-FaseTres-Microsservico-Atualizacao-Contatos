@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: techchallenge-dotnet-contactupdate
+      annotations:
+        prometheus.io/scrape: "true" 
+        prometheus.io/path: "/metrics" 
+        prometheus.io/port: "5010" 
     spec:
       containers:
         - name: container-techchallenge-dotnet-contactupdate
@@ -76,4 +80,4 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: 10
+          averageUtilization: 70
